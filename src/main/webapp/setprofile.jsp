@@ -119,20 +119,18 @@
         </header>
 
         <ul>
-
-
+            
             <li><a href="/Instagrim">Home</a></li>
         </ul>
 
 
         <div class="lg">
-            <form action="Register" method="POST">
+            <form action="Setprofile" method="POST">
                 <div class="lg_top"></div>
                 <div class="lg_main">
                     <div class="lg_m_1">
 
                         <input type="text" name="username" value="username" >
-                        <input type="password" name="password" value="password" >
                         <input type="text" name="firstname" value="firstname">
                         <input type="text" name="lastname" value="lastname">
                         <input type="text" name="email" value="email">
@@ -141,9 +139,9 @@
                     </div>
                 </div>
                 <div class="lg_foot">
-                    <input type="submit" value="Register" class="bn" /></div> 
+                    <input type="submit" value="Setprofile" class="bn" /></div> 
                     <%
-                        System.out.println("succes regis");
+                        System.out.println("succes set");
                     %>
             </form>
         </div>

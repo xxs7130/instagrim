@@ -14,19 +14,23 @@
         <title>Instagrim</title>
         <link rel="stylesheet" type="text/css" href="/Instagrim/Styles.css" />
         <style>
-
+  
             ul{
-                list-style-type: none;
-                margin:50px;
+                list-style-type:none;
+                margin:100px;
                 padding: 1cm;
                 overflow: hidden;
                 position:absolute;
                 left:170px;
                 top:35px;
+
             }
             li{
                 float:left;
             }
+
+
+
             a:link,a:visited{
                 display:block;
                 width: 200px;
@@ -43,6 +47,8 @@
                 background-color: #7A991A;
 
             }
+
+
         </style>
     </head>
     <body>
@@ -51,10 +57,17 @@
         </header>
 
 
-        <ul>
-            <li><a href="/Instagrim/upload.jsp">Upload</a></li>
+        <ul       list-style-type="none"
+                  margin="50px"
+                  padding="1cm"
+                  overflow="hidden"
+                  position="absolute"
+                  left=170px"
+                  top="35px"> 
 
-            <li><a href="/Instagrim">Home</a></li>
+            <li  float="left"><a href="/Instagrim/upload.jsp">Upload</a></li>
+
+            <li   float="left"><a href="/Instagrim">Home</a></li>
         </ul>
 
 
@@ -65,29 +78,29 @@
                 if (lsPics == null) {
             %>
             <p>No Pictures found</p>
+           
+            
             <%
             } else {
                 Iterator<Pic> iterator;
                 iterator = lsPics.iterator();
                 while (iterator.hasNext()) {
                     Pic p = (Pic) iterator.next();
-
-
+               System.out.println("get1");
             %>
-            <div class="img" > 
-                <form action="Delete" method="POST">
-                   File to delete: <input type="file" name="upfile" class="ur"/>
-                   <input type="submit" value="delete">
-                </form>
+            <div class="img">
                 <div style="width:400px; height:400px;"><a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"  width="100%" height="100%"></a></div>
-               
-                <%
-
-                        }
-                    }
-                %>
+                
+             
             </div>
+            <br/><%
+
+                    }
+                }
+            %>
         </article>
+
+
 
     </body>
 </html>

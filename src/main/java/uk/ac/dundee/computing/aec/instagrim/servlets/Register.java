@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.models.User;
 
@@ -47,10 +48,26 @@ public class Register extends HttpServlet {
             throws ServletException, IOException {
         String username=request.getParameter("username");
         String password=request.getParameter("password");
+        String firstname=request.getParameter("firstname");
+        String lastname=request.getParameter("lastname");
+        String email=request.getParameter("email");
+        String address=request.getParameter("address");
         
         User us=new User();
         us.setCluster(cluster);
-        us.RegisterUser(username, password);
+        
+        System.out.println("register");
+        
+        us.RegisterUser(username, password, firstname, lastname,email,address);
+       
+        HttpSession session=request.getSession();
+        
+        session.setAttribute("firstname", firstname);
+        session.setAttribute("lastname",lastname );
+        session.setAttribute("email", email);
+        session.setAttribute("address", address);
+        
+        System.out.println("sucess set");
         
 	response.sendRedirect("/Instagrim");
         

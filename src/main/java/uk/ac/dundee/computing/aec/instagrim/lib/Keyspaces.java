@@ -46,9 +46,10 @@ public final class Keyspaces {
                      + "     password text,\n"
                     + "      first_name text,\n"
                     + "      last_name text,\n"
-                    + "      email set<text>,\n"
-                    + "      addresses  map<text, frozen <address>>\n"
-                    + "  );";
+                    + "      email text,\n"
+                    + "      address text,\n"
+                   // + "      addresses  map<text, frozen <address>>\n"
+                    + "  );";   
             Session session = c.connect();
             try {
                 PreparedStatement statement = session

@@ -87,6 +87,43 @@ public class PicModel {
         }
     }
 
+    public void deletePic(byte[] b, String type, String name, String user) {
+        try {
+            Convertors convertor = new Convertors();
+
+            String types[]=Convertors.SplitFiletype(type);
+            ByteBuffer buffer = ByteBuffer.wrap(b);
+            int length = b.length;
+            java.util.UUID picid = convertor.getTimeUUID();
+            
+            //The following is a quick and dirty way of doing this, will fill the disk quickly !
+            Boolean success = (new File("/var/tmp/instagrim/")).mkdirs();
+            FileOutputStream output = new FileOutputStream(new File("/var/tmp/instagrim/" + picid));
+
+            output.write(b);
+            byte []  thumbb = picresize(picid.toString(),types[1]);
+            int thumblength= thumbb.length;
+            ByteBuffer thumbbuf=ByteBuffer.wrap(thumbb);
+            byte[] processedb = picdecolour(picid.toString(),types[1]);
+            ByteBuffer processedbuf=ByteBuffer.wrap(processedb);
+            int processedlength=processedb.length;
+            Session session = cluster.connect("instagrim");
+
+            PreparedStatement psInsertPic = session.prepare("delete from pics where picid=?");
+            PreparedStatement psInsertPicToUser = session.prepare("delete from  userpiclist where picid =?");
+            BoundStatement bsInsertPic = new BoundStatement(psInsertPic);
+            BoundStatement bsInsertPicToUser = new BoundStatement(psInsertPicToUser);
+
+            Date DateAdded = new Date();
+            session.execute(bsInsertPic.bind(picid));
+            session.execute(bsInsertPicToUser.bind(picid));
+            session.close();
+
+        } catch (IOException ex) {
+            System.out.println("Error --> " + ex);
+        }
+    }
+    
     public byte[] picresize(String picid,String type) {
         try {
             BufferedImage BI = ImageIO.read(new File("/var/tmp/instagrim/" + picid));
@@ -121,14 +158,14 @@ public class PicModel {
     }
 
     public static BufferedImage createThumbnail(BufferedImage img) {
-        img = resize(img, Method.SPEED, 250, OP_ANTIALIAS, OP_GRAYSCALE);
+        
         // Let's add a little border before we return result.
         return pad(img, 2);
     }
     
    public static BufferedImage createProcessed(BufferedImage img) {
         int Width=img.getWidth()-1;
-        img = resize(img, Method.SPEED, Width, OP_ANTIALIAS, OP_GRAYSCALE);
+       
         return pad(img, 4);
     }
    
@@ -156,6 +193,33 @@ public class PicModel {
         }
         return Pics;
     }
+    
+        public java.util.LinkedList<Pic> getPicsForAll() {
+        java.util.LinkedList<Pic> Pics = new java.util.LinkedList<>();
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("select picid from userpiclist");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute( // this is where the query is executed
+                boundStatement.bind( // here you are binding the 'boundStatement'
+                        ));
+        if (rs.isExhausted()) {
+            System.out.println("No Images returned");
+            return null;
+        } else {
+            for (Row row : rs) {
+                Pic pic = new Pic();
+                java.util.UUID UUID = row.getUUID("picid");
+                System.out.println("UUID" + UUID.toString());
+                pic.setUUID(UUID);
+                Pics.add(pic);
+
+            }
+        }
+        return Pics;
+    }
+    
+    
 
     public Pic getPic(int image_type, java.util.UUID picid) {
         Session session = cluster.connect("instagrim");
